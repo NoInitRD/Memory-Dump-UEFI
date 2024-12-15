@@ -21,3 +21,10 @@ To run the EDK2 setup script:
 ```sudo chmod +x downloadInstall.sh && sudo ./downloadInstall.sh```
 
 After making changes to "app/Application.c", use the "run.sh" script to move through the entire workflow. 
+
+# Tips
+For each moment of time a computer is unpowered the contents of the RAM will degrade rapidly. To mitigate this, I like to short the reset pins on the devices motherboard. This will cause the device to abruptly reboot without interrupting power delivery, which keeps the contents of RAM fresh. These pins can be seen marked with "RESET" in the below image. Their location can vary based on what motherboard you are using. 
+
+![image](https://github.com/user-attachments/assets/feea8481-e67c-47e5-ac1f-fecd5e2d124f)
+
+Another tactic is to physically cool the RAM as much as possible, which can help slow the degradation. 
