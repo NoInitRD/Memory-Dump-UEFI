@@ -1,9 +1,6 @@
 # _config.yml
 
 title: Dumping Memory to Bypass BitLocker on Windows 11
-description: >-
-  Desc
-baseurl: "" 
 remote_theme: pages-themes/hacker@v0.2.0
 plugins:
 - jekyll-remote-theme 
