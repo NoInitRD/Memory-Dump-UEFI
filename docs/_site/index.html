@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=d04feef409313f2ec3d314cb4d642e2ee0da9930">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup theme-color -->
+<!-- start theme color meta headers -->
+<meta name="theme-color" content="#151515">
+<meta name="msapplication-navbutton-color" content="#151515">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- end theme color meta headers -->
+
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Intro | Dumping Memory to Bypass BitLocker on Windows 11</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Intro" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Desc" />
+<meta property="og:description" content="Desc" />
+<link rel="canonical" href="http://localhost:4000/" />
+<meta property="og:url" content="http://localhost:4000/" />
+<meta property="og:site_name" content="Dumping Memory to Bypass BitLocker on Windows 11" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Intro" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","description":"Desc","headline":"Intro","name":"Dumping Memory to Bypass BitLocker on Windows 11","url":"http://localhost:4000/"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <a id="a-title" href="/">
+          <h1>Dumping Memory to Bypass BitLocker on Windows 11</h1>
+        </a>
+        <h2>Desc</h2>
+
+        <section id="downloads">
+          
+          <a href="https://github.com/NoInitRD/MemoryDumpUEFI" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h2 id="intro">Intro</h2>
+
+<p>In this article I will demonstrate how to bypass BitLocker encryption on Windows 11 (version 24H2).
+This was accomplished by extracting full volume encryption keys (FVEK) from memory using my tool Memory-Dump-UEFI.</p>
+
+<h2 id="background">Background</h2>
+
+<p>If an attacker has physical access to the device, they can potentially get access by 
+apruptly restarting the computer and dumping RAM from recently running instances of Windows. The captured
+memory can be analyzed to locate sensitive information like FVEK keys.
+This technique is not foolproof as the contents of RAM will rapidly degrade when power is cut off.</p>
+
+<p align="center">
+	<img src="images/image0.png" width="600" />
+</p>
+
+<p>There are several techniques to mitigate this memory degradation, including cooling the RAM physically or using
+external power sources to maintain power delivery. In the case of this demo, I shorted the reset pins on the device’s
+motherboard, which causes the system to abruptly restart without losing power.</p>
+
+<p>Another potential issue is secure boot, which is a security standard that restricts what is allowed to run when
+a device starts up. This protection has its own limitations, and has been bypassed using shims or a variety 
+of other means that are outside the scope of this demo.</p>
+
+<h2 id="step-1-create-a-bootable-usb-device">Step 1: Create a Bootable USB Device</h2>
+
+<p>For this step you must obtain a USB storage device that is larger than however much RAM is on
+the target system. I have included a script called <code class="language-plaintext highlighter-rouge">flashimage.sh</code> to simplify this step.</p>
+
+<p><a href="https://github.com/NoInitRD/MemoryDumpUEFI">Follow the steps detailed here to create and use the bootable application.</a></p>
+
+<h2 id="step-2-abruptly-restart-the-target-system">Step 2: Abruptly Restart the Target System</h2>
+
+<p>This can be done in a variety of ways but the goal is to minimize how much time the computer is completely powered off.
+In my experience I have had the most success restarting the system while Windows is loading but before the login
+screen has appeared, at least in the case of finding FVEK keys.</p>
+
+<h2 id="step-3-boot-from-the-usb-device">Step 3: Boot from the USB Device</h2>
+
+<p>Immediately boot to Memory-Dump-UEFI from the USB device. You will arrive at the UEFI shell, where you can locate
+and execute <code class="language-plaintext highlighter-rouge">app.efi</code>. There are more details on how to do this in the <a href="https://github.com/NoInitRD/Memory-Dump-UEFI/blob/d04feef409313f2ec3d314cb4d642e2ee0da9930/README.md">README</a>
+for the application. The amount of time it will take depends on the amount of RAM being dumped and the speed of
+the USB device. I recommend leaving any other USB storage devices unplugged during this step to avoid the 
+program accidentally writing to the wrong drive.</p>
+
+<p align="center">
+	<img src="images/image1.png" />
+</p>
+
+<p>Above is an example of what it should look like when you make it to the shell. The memory dump will start generating
+dump files until it runs out of memory. After its completed, feel free to shut the computer off like normal.</p>
+
+<h2 id="step-4-analyzing-the-dumps">Step 4: Analyzing the Dumps</h2>
+
+<h3 id="setup">Setup</h3>
+
+<p>There will probably be several dumps produced by the application. This is due to the 4GB limit on file size
+imposed by the FAT32 filesystem. The filesystem has to be FAT32 meet UEFI specification. For 
+convenience purposes I have included a script in the tools directory called <code class="language-plaintext highlighter-rouge">concatDumps.py</code> 
+that can combine several dumps into one in chronological order. The content of the dump will consist 
+of whatever raw data was inside memory at the time, so I recommend a tool like <code class="language-plaintext highlighter-rouge">xxd</code> to read it more easily.
+To help with searching the dumps I included a script called <code class="language-plaintext highlighter-rouge">searchMem.py</code> that allows you to search for a
+hex pattern within the dump. It will find the offset of instances of that hex pattern, which you can then jump
+to by using <code class="language-plaintext highlighter-rouge">xxd -s &lt;offset&gt; &lt;dump&gt;</code>.</p>
+
+<p align="center">
+	<img src="images/image2.png" />
+</p>
+
+<h3 id="pool-tags">Pool Tags</h3>
+
+<p>Pool tags are 4 character long identifiers that indicate where Windows kernel memory pools are. These pools 
+are allocated by the Windows kernel and are great places to look for sensitive information. There are a large
+number of these pool tags, and I included a text file called <code class="language-plaintext highlighter-rouge">pooltag.txt</code> which contains a list
+of the pool tags with details about their respective purposes.</p>
+
+<p>Before continuing I’d like to give Microsoft a round of applause for being kind enough to plainly mark where
+cryptographic keys show up in memory.
+Back on Windows 7, key recovery was as simple as locating the <code class="language-plaintext highlighter-rouge">FVEc</code> pool tag, which corresponds to cryptographic
+allocations under <code class="language-plaintext highlighter-rouge">fvevol.sys</code>. On Windows 8.1 and 10 the key could be found in the memory pool tagged by 
+<code class="language-plaintext highlighter-rouge">Cngb</code> which corresponds to the <code class="language-plaintext highlighter-rouge">ksecdd.sys</code> module. Throughout my study of the Windows 11 memory dump, I couldn’t
+locate the key in either of those places, but I did find it in two other locations.</p>
+
+<h3 id="fvek-key-recovery">FVEK Key Recovery</h3>
+
+<p>The first place I located the FVEK key was under the <code class="language-plaintext highlighter-rouge">dFVE</code> pool tag, which indicates memory allocated by 
+<code class="language-plaintext highlighter-rouge">dumpfve.sys</code>, which pertains to the full volume encryption crash dump filter for bitlocker drive encryption.
+The pool tag is underlined in blue while the FVEK key is highlighted in red. This was the easiest and most 
+consistent location I found the key, and it is also prefaced by <code class="language-plaintext highlighter-rouge">0x0480</code> which indicates the type of encryption
+being used, which in my case is XTS-AES-128.</p>
+
+<p align="center">
+	<img src="images/image3.png" />
+</p>
+
+<p>The second location is under the <code class="language-plaintext highlighter-rouge">None</code> tag, which pertains to calls to the <code class="language-plaintext highlighter-rouge">ExAllocatePool</code> routine. This time
+the first half of the key can be seen two times and the second half once.</p>
+
+<p align="center">
+	<img src="images/image4.png" />
+</p>
+
+<h3 id="next-steps">Next Steps</h3>
+
+<p>It’s important to note that you need to preface 
+whatever key you obtain with what algorithm is being used. That means if your key is:</p>
+
+<p><code class="language-plaintext highlighter-rouge">b2cbc06071931b7cc50b59f8789571f4dd815c2008e93c02d5c6cd98c83ef54b</code></p>
+
+<p>You need to add <code class="language-plaintext highlighter-rouge">0x8004</code> (or whatever the algorithm used was) to the beginning of the key in little endian format
+like this:</p>
+
+<p><code class="language-plaintext highlighter-rouge">0480b2cbc06071931b7cc50b59f8789571f4dd815c2008e93c02d5c6cd98c83ef54b</code></p>
+
+<p>Next, you need to take that hex and dump it into a file, which can be done like:</p>
+
+<p><code class="language-plaintext highlighter-rouge">echo "0480b2cbc06071931b7cc50b59f8789571f4dd815c2008e93c02d5c6cd98c83ef54b" | xxd -r -p &gt; output.fvek</code></p>
+
+<p>I highly recommend using the <code class="language-plaintext highlighter-rouge">dislocker</code> suite of tools to figure out which algorithm/value you
+need and to ultimately unlock the drive. If you did everything correctly you can use <code class="language-plaintext highlighter-rouge">output.fvek</code> to unlock
+the bitlocker protected partition and access any data on the volume.</p>
+
+<h2 id="final-notes">Final Notes</h2>
+
+<p>The best possible way to understand how Microsoft implemented bitlocker is to do kernel level debugging using
+<code class="language-plaintext highlighter-rouge">windbg</code>. This can be done fairly easily using virtual machines or a crossed over USB 3.0 A/A cable. The reason I was
+able to find the key in the first place is by stepping through the Windows boot process and watching bitlocker
+in action. Microsoft makes an effort to destroy keys using functions like <code class="language-plaintext highlighter-rouge">SymCryptSessionDestroy</code> but they 
+fail to destroy every key, as evident by its presence on the heap.</p>
+
+<h2 id="references">References</h2>
+
+<p><a href="https://tribalchicken.net/recovering-bitlocker-keys-on-windows-8-1-and-10/">https://tribalchicken.net/recovering-bitlocker-keys-on-windows-8-1-and-10/</a></p>
+
+<p><a href="https://github.com/libyal/libbde/blob/main/documentation/BitLocker%20Drive%20Encryption%20(BDE)%20format.asciidoc">https://github.com/libyal/libbde/blob/main/documentation/BitLocker%20Drive%20Encryption%20(BDE)%20format.asciidoc</a></p>
+
+<p><a href="https://github.com/Aorimn/dislocker">https://github.com/Aorimn/dislocker</a></p>
+
+<p><a href="https://github.com/microsoft/SymCrypt">https://github.com/microsoft/SymCrypt</a></p>
+
+<p><a href="https://github.com/libyal/libbde">https://github.com/libyal/libbde</a></p>
+
+<p><a href="https://github.com/zodiacon/PoolMonX/blob/master/res/pooltag.txt">https://github.com/zodiacon/PoolMonX/blob/master/res/pooltag.txt</a></p>
+
+<p><a href="https://techcommunity.microsoft.com/blog/askperf/an-introduction-to-pool-tags/372983">https://techcommunity.microsoft.com/blog/askperf/an-introduction-to-pool-tags/372983</a></p>
+
+      </section>
+    </div>
+  </body>
+</html>
