@@ -147,3 +147,9 @@ fail to destroy every key, as evident by its presence on the heap.
 <https://github.com/zodiacon/PoolMonX/blob/master/res/pooltag.txt>
 
 <https://techcommunity.microsoft.com/blog/askperf/an-introduction-to-pool-tags/372983>
+
+## Contact
+
+If you have any questions you can reach me at the email below, thank you for reading!
+
+<a href="mailto:noinitrd@gmail.com">NoInitRD@gmail.com</a>
