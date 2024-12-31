@@ -1,6 +1,10 @@
 import sys
 
 
+#read in 4gb chunks
+CHUNK_SIZE = 4 * 1024 * 1024 * 1024
+
+
 def search_memory_dump(memory_dump_path, hex_pattern):
     try:
         pattern = bytes.fromhex(hex_pattern)
@@ -8,20 +12,25 @@ def search_memory_dump(memory_dump_path, hex_pattern):
         print("Error: Invalid hex pattern.")
         sys.exit(1)
 
-    
     try:
         with open(memory_dump_path, "rb") as file:
-            dump_data = file.read()
-
             offset = 0
+
             while True:
-                offset = dump_data.find(pattern, offset)
-                if offset == -1:
+                chunk = file.read(CHUNK_SIZE)
+                
+                if not chunk:
                     break
-                print(f"Pattern found at offset: {offset:#x}")
-                offset += 1
-        print(f"Error: File {memory_dump_path} not found.")
-        sys.exit(1)
+
+                chunk_offset = chunk.find(pattern)
+                while chunk_offset != -1:
+                    print(f"Pattern found at offset: {offset + chunk_offset:#x}")
+                    chunk_offset = chunk.find(pattern, chunk_offset + 1)
+
+                offset += len(chunk)
+
+        print(f"Search completed for file {memory_dump_path}.")
+
     except IOError as e:
         print(f"Error: {e}")
         sys.exit(1)
