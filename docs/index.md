@@ -60,10 +60,10 @@ dump files until it runs out of memory. After its completed, feel free to shut t
 
 There will probably be several dumps produced by the application. This is due to the 4GB limit on file size
 imposed by the FAT32 filesystem. The filesystem has to be FAT32 meet UEFI specification. For 
-convenience purposes I have included a script in the tools directory called `concatDumps.py` 
+convenience purposes I have included a program in the tools directory called `concatDumps` 
 that can combine several dumps into one in chronological order. The content of the dump will consist 
 of whatever raw data was inside memory at the time, so I recommend a tool like `xxd` to read it more easily.
-To help with searching the dumps I included a script called `searchMem.py` that allows you to search for a
+To help with searching the dumps I included a program called `searchMem` that allows you to search for a
 hex pattern within the dump. It will find the offset of instances of that hex pattern, which you can then jump
 to by using `xxd -s <offset> <dump>`.
 
