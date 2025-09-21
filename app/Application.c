@@ -81,6 +81,9 @@ EFI_STATUS EFIAPI UefiMain(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *Syste
     UINTN totalMemoryWritten = 0; //total memory written across all files
     UINTN processedMemory = 0;    //memory processed for the current file
 
+    //reset watchdog timer to avoid system reset after 5 minutes
+    SystemTable->BootServices->SetWatchdogTimer(0, 0, 0, NULL);
+
     //get the root directory using GetWorkingDirectory
     Status = GetWorkingDirectory(ImageHandle, &RootDir);
     if (EFI_ERROR(Status))
