@@ -5,9 +5,7 @@
 #include <inttypes.h>
 #include <ctype.h>
 
-
 #define CHUNK_SIZE (4LL * 1024 * 1024 * 1024) //read the file in 4GB chunks
-
 
 /*
  * this function searches for a hex pattern in the dump using the path and
@@ -127,7 +125,6 @@ void search_pattern(const char *memory_dump_path, const char *pattern_hex)
     fclose(file);
 }
 
-
 /*
  * this function searches for the nth non-zero byte in the memory dump using the
  * dump path and the number of non-zero bytes to skip
@@ -215,7 +212,6 @@ void search_nth_nonzero(const char *memory_dump_path, const char *nth_value_str)
     fclose(file);
 }
 
-
 /*
  * this function takes the memory dump path, argument type, and value,
  * checks the argument type, and calls the appropriate search function
@@ -236,7 +232,6 @@ void search_memory_dump(const char *memory_dump_path, const char *arg_type, cons
         exit(1);
     }
 }
-
 
 int main(int argc, char *argv[])
 {
