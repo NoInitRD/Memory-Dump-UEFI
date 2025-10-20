@@ -9,37 +9,37 @@
   SKUID_IDENTIFIER               = DEFAULT
 
 [LibraryClasses]
-  # Entry point
+  #entry point
   UefiApplicationEntryPoint|MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint.inf
   
-  # Basic UEFI libraries
+  #basic UEFI libraries
   UefiBootServicesTableLib|MdePkg/Library/UefiBootServicesTableLib/UefiBootServicesTableLib.inf
   UefiRuntimeServicesTableLib|MdePkg/Library/UefiRuntimeServicesTableLib/UefiRuntimeServicesTableLib.inf
   UefiLib|MdePkg/Library/UefiLib/UefiLib.inf
   
-  # Base libraries
+  #base libraries
   BaseLib|MdePkg/Library/BaseLib/BaseLib.inf
   BaseMemoryLib|MdePkg/Library/BaseMemoryLib/BaseMemoryLib.inf
   
-  # Memory management
+  #memory management
   MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
   
-  # PCD support
+  #PCD support
   PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
   
-  # Print and debug
+  #print and debug
   PrintLib|MdePkg/Library/BasePrintLib/BasePrintLib.inf
   DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
   DebugPrintErrorLevelLib|MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib.inf
   
-  # Device path
+  #device path
   DevicePathLib|MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib.inf
   
-  # Null libraries for dependencies
+  #null libraries for dependencies
   RegisterFilterLib|MdePkg/Library/RegisterFilterLibNull/RegisterFilterLibNull.inf
   StackCheckLib|MdePkg/Library/StackCheckLibNull/StackCheckLibNull.inf
   
-  # HII support (if needed by UefiLib)
+  #HII support (if needed by UefiLib)
   UefiHiiServicesLib|MdeModulePkg/Library/UefiHiiServicesLib/UefiHiiServicesLib.inf
   HiiLib|MdeModulePkg/Library/UefiHiiLib/UefiHiiLib.inf
 

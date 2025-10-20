@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APP_FILE="Build/Application.efi"
+APP_FILE="Build/MemoryDump.efi"
 MOUNT_DIR="/mnt/efi_image"
 
 usage() {

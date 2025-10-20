@@ -4,7 +4,7 @@ IMAGE_NAME="bootable_image.iso"
 MOUNT_DIR="/mnt/efi_image"
 EFI_DIR="$MOUNT_DIR/EFI/BOOT"
 BOOT_FILE="dependencies/shellx64.efi"
-APP_FILE="Build/Application.efi"
+APP_FILE="Build/MemoryDump.efi"
 VOLUME_LABEL="BOOT"
 FAT_SIZE_MB=7000
 
@@ -36,8 +36,8 @@ sudo mount -o loop "$IMAGE_NAME" "$MOUNT_DIR"
 #create the necessary EFI directories
 sudo mkdir -p "$EFI_DIR"
 
-#copy "Application.efi" into the EFI boot directory
-printf "Copying Application.efi to $EFI_DIR...\n"
+#copy EFI into the EFI boot directory
+printf "Copying EFI to $EFI_DIR...\n"
 sudo cp "$BOOT_FILE" "$EFI_DIR/BOOTx64.efi"
 sudo cp "$APP_FILE" "$MOUNT_DIR/app.efi"
 
