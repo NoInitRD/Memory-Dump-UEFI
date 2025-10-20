@@ -194,6 +194,5 @@ def main():
     print_success("=" * 50)
     print_success("Build completed successfully!")
 
-
 if __name__ == "__main__":
     main()
