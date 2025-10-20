@@ -4,9 +4,7 @@
 #include <stdint.h>
 #include <ctype.h>
 
-
 #define CHUNK_SIZE (4LL * 1024 * 1024 * 1024) //read the file in 4GB chunks
-
 
 /*
  * this function extracts and returns the first integer it finds in the filename,
@@ -25,7 +23,6 @@ int extract_number(const char *filename)
     return number;
 }
 
-
 /*
  * this function compares two filenames based on the integer numbers extracted
  * from the filenames, it is used for sorting an array of filenames
@@ -40,7 +37,6 @@ int compare_files(const void *a, const void *b)
 
     return num_a - num_b;
 }
-
 
 /*
  * this function concatenates multiple files into a single output file,
@@ -88,7 +84,6 @@ void concat_files(const char *output_file_name, char **files, int file_count)
     fclose(output_file);
     printf("Files have been concatenated into '%s'\n", output_file_name);
 }
-
 
 int main(int argc, char *argv[])
 {

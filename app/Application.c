@@ -8,10 +8,8 @@
 #include <Guid/FileInfo.h>
 #include <string.h>
 
-
 #define CHUNK_SIZE 0x8000000     //128 MB per chunk
 #define MAX_FILE_SIZE 0xA8000000 //4GB per file (fat32 restriction)
-
 
 //wait for user input before continuing
 VOID WaitForKeyInput()
@@ -24,7 +22,6 @@ VOID WaitForKeyInput()
             break;
     }
 }
-
 
 //finds the working directory of the current application
 EFI_STATUS GetWorkingDirectory(EFI_HANDLE ImageHandle, EFI_FILE_PROTOCOL **RootDir)
@@ -59,7 +56,6 @@ EFI_STATUS GetWorkingDirectory(EFI_HANDLE ImageHandle, EFI_FILE_PROTOCOL **RootD
 
     return EFI_SUCCESS;
 }
-
 
 EFI_STATUS EFIAPI UefiMain(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable)
 {
